@@ -16,4 +16,4 @@ Integrated = (SART / 10) × (Embryo + Endo-R) / 2
 
 **Authors:** Bilen E, Okyay RE — Dokuz Eylül University, Department of Obstetrics and Gynecology.
 
-Open `index.html` in any browser, or use the live version (add to home screen for an app-like experience).
+**Live:** https://egehanbilen.github.io/endo-r-score/ — open on a phone and "Add to Home Screen" for an app-like experience, or open `index.html` locally.
