@@ -3,173 +3,153 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#1a1611" />
+<meta name="theme-color" content="#000000" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>Endo-R · Integrated Implantation Score</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#e9e2d3; --paper-2:#e3dbc8; --card:#efe9dc;
-    --ink:#1b1712; --ink-2:#4d4536; --mute:#8b8170;
-    --blood:#9c3322; --blood-2:#b84630; --teal:#1f4a43;
-    --line:#c9bfa6; --line-2:#d8cfb9; --hair:#bcb097;
-    --gridA:rgba(110,96,70,.07); --gridB:rgba(110,96,70,.045);
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",sans-serif;
+    --mono:ui-monospace,"SF Mono","SFMono-Regular",Menlo,monospace;
+    --bg:#f5f5f7; --card:#ffffff; --card-2:#fbfbfd;
+    --ink:#1d1d1f; --ink2:#6e6e73; --ink3:#86868b;
+    --line:#e7e7ec; --line-2:#ededf2;
+    --blue:#0071e3; --teal:#0a7d70; --green:#30b85f; --amber:#f0922b;
+    --radius:22px;
+    --shadow:0 1px 2px rgba(0,0,0,.04), 0 8px 24px -14px rgba(0,0,0,.22);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
   body{
-    font-family:'Hanken Grotesk',sans-serif;color:var(--ink);
-    background:var(--paper);
-    background-image:
-      linear-gradient(var(--gridA) 1px,transparent 1px),
-      linear-gradient(90deg,var(--gridA) 1px,transparent 1px),
-      linear-gradient(var(--gridB) 1px,transparent 1px),
-      linear-gradient(90deg,var(--gridB) 1px,transparent 1px);
-    background-size:80px 80px,80px 80px,16px 16px,16px 16px;
-    -webkit-font-smoothing:antialiased;line-height:1.4;min-height:100vh;
+    font-family:var(--sans);background:var(--bg);color:var(--ink);
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    line-height:1.45;min-height:100vh;letter-spacing:-.01em;
   }
-  .wrap{max-width:540px;margin:0 auto;padding:0 20px 120px;position:relative}
+  .wrap{max-width:500px;margin:0 auto;padding:0 16px 120px}
 
-  /* ---- masthead ---- */
-  .mast{padding:26px 0 0}
-  .rule{height:2px;background:var(--ink);margin:14px 0}
-  .rule.thin{height:1px;background:var(--hair)}
-  .meta{display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;
-    font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
-  .meta .blood{color:var(--blood);font-weight:700}
-  .title{font-family:'Instrument Serif',serif;font-weight:400;line-height:.94;letter-spacing:0;margin:14px 0 4px;font-size:46px}
-  .title em{font-style:italic;color:var(--blood)}
-  .subt{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.04em;color:var(--mute);text-transform:uppercase}
+  /* ---- header ---- */
+  header{padding:38px 6px 8px}
+  .eyebrow{font-size:13px;font-weight:600;color:var(--teal);letter-spacing:-.01em}
+  header h1{font-size:34px;font-weight:700;letter-spacing:-.03em;line-height:1.06;margin:6px 0 0}
+  header p{font-size:15px;color:var(--ink2);margin:8px 0 0;letter-spacing:-.01em}
 
-  /* ---- instrument readout ---- */
-  .inst{margin-top:18px;background:var(--ink);color:var(--paper);border-radius:4px;padding:20px 20px 22px;position:relative}
-  .inst .top{display:flex;justify-content:space-between;align-items:flex-start}
-  .inst .cap{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#a99a82}
-  .inst .num{font-family:'Instrument Serif',serif;font-size:80px;line-height:.82;letter-spacing:-.01em;margin-top:6px}
-  .inst .num .u{font-family:'JetBrains Mono',monospace;font-size:18px;color:#857a67;letter-spacing:0}
-  .state{text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.5;max-width:150px}
-  .state .tag{display:inline-block;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:11px;
-    padding:3px 8px;border-radius:3px;border:1px solid #5b5346;color:#c9bca4}
-  .state.above .tag{color:#0f1311;background:#9fd3b0;border-color:#9fd3b0}
-  .state.below .tag{color:#1b1712;background:#e3b466;border-color:#e3b466}
-  .state .sub{color:#857a67;margin-top:7px;text-transform:none;letter-spacing:0;font-size:10px}
+  /* ---- hero result ---- */
+  .hero{margin-top:20px;background:linear-gradient(180deg,#2b2b2e 0%,#1d1d1f 60%);color:#f5f5f7;
+    border-radius:26px;padding:24px 24px 22px;box-shadow:var(--shadow)}
+  .hero .cap{font-size:12px;font-weight:600;letter-spacing:.02em;color:#a1a1a8;text-transform:uppercase}
+  .hero .num{font-size:76px;font-weight:600;letter-spacing:-.04em;line-height:.95;margin-top:6px;font-variant-numeric:tabular-nums}
+  .hero .num .u{font-size:22px;font-weight:500;color:#86868b;letter-spacing:-.02em}
+  .pill{display:inline-flex;align-items:center;gap:7px;margin-top:14px;padding:7px 13px;border-radius:100px;
+    font-size:13px;font-weight:600;background:rgba(255,255,255,.1);color:#d7d7da}
+  .pill .d{width:8px;height:8px;border-radius:50%;background:#86868b}
+  .pill.above{background:rgba(48,184,95,.16);color:#5fe08c}.pill.above .d{background:#30b85f}
+  .pill.below{background:rgba(240,146,43,.16);color:#ffb866}.pill.below .d{background:#f0922b}
+  .pill .sub{font-weight:400;color:inherit;opacity:.82}
 
-  /* measurement ruler */
-  .ruler{margin-top:22px;position:relative;height:46px}
-  .track{position:absolute;left:0;right:0;top:24px;height:3px;background:#3a342b}
-  .track .fill{position:absolute;left:0;top:0;height:100%;background:var(--blood-2);transition:width .45s cubic-bezier(.2,.8,.2,1)}
-  .ticks{position:absolute;left:0;right:0;top:18px;height:15px}
-  .ticks i{position:absolute;top:0;width:1px;height:8px;background:#5b5346}
-  .ticks i.maj{height:15px;background:#857a67}
-  .ticks i b{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;
-    font-size:9px;color:#857a67;font-weight:400}
-  .thr{position:absolute;top:10px;height:30px;width:1px;background:#e3b466;left:41.9%}
-  .thr b{position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;
-    font-size:9px;color:#e3b466;white-space:nowrap}
-  .needle{position:absolute;top:14px;width:0;height:0;left:0%;transform:translateX(-50%);
-    border-left:6px solid transparent;border-right:6px solid transparent;border-top:9px solid var(--paper);
-    transition:left .45s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}
+  .ruler{margin-top:20px;position:relative;height:42px}
+  .track{position:absolute;left:0;right:0;top:20px;height:5px;border-radius:100px;background:rgba(255,255,255,.14)}
+  .track .fill{position:absolute;left:0;top:0;height:100%;border-radius:100px;
+    background:linear-gradient(90deg,var(--teal),#1fbf9f);transition:width .5s cubic-bezier(.22,.61,.36,1)}
+  .ticks{position:absolute;left:0;right:0;top:15px;height:15px}
+  .ticks i{position:absolute;top:0;width:1px;height:6px;background:rgba(255,255,255,.22)}
+  .ticks i.maj{height:11px;background:rgba(255,255,255,.34)}
+  .ticks i b{position:absolute;top:14px;left:50%;transform:translateX(-50%);font:500 9px/1 var(--mono);color:#86868b}
+  .thr{position:absolute;top:11px;height:24px;width:1.5px;background:var(--amber);left:41.9%;border-radius:2px}
+  .thr b{position:absolute;top:-13px;left:50%;transform:translateX(-50%);font:600 9px/1 var(--mono);color:var(--amber);white-space:nowrap}
+  .needle{position:absolute;top:14px;left:0%;width:17px;height:17px;border-radius:50%;background:#fff;
+    transform:translateX(-50%);box-shadow:0 2px 6px rgba(0,0,0,.4);transition:left .5s cubic-bezier(.22,.61,.36,1)}
 
-  .comps{display:flex;margin-top:24px;border-top:1px solid #3a342b}
-  .comps .c{flex:1;padding-top:11px;border-right:1px solid #3a342b}
-  .comps .c:last-child{border-right:0}
-  .comps .c .k{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#857a67}
-  .comps .c .v{font-family:'Instrument Serif',serif;font-size:30px;line-height:1;margin-top:3px}
-  .comps .c .v s{font-family:'JetBrains Mono',monospace;font-size:11px;color:#857a67;text-decoration:none}
+  .comps{display:flex;gap:10px;margin-top:22px}
+  .comps .c{flex:1;background:rgba(255,255,255,.07);border-radius:14px;padding:11px 13px}
+  .comps .c .k{font-size:11px;font-weight:600;color:#a1a1a8;letter-spacing:-.01em}
+  .comps .c .v{font-size:21px;font-weight:600;margin-top:3px;font-variant-numeric:tabular-nums}
+  .comps .c .v s{font-size:12px;color:#86868b;text-decoration:none;font-weight:500}
 
-  /* ---- form blocks ---- */
-  .block{margin-top:30px}
-  .bhead{display:flex;align-items:baseline;gap:12px}
-  .bhead .idx{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blood);font-weight:700;letter-spacing:.05em}
-  .bhead h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:25px;margin:0;flex:1;letter-spacing:0}
-  .bhead .sub{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink)}
-  .bhead .sub s{color:var(--mute);text-decoration:none;font-size:11px}
+  /* ---- cards ---- */
+  .card{background:var(--card);border-radius:var(--radius);margin-top:16px;box-shadow:var(--shadow);overflow:hidden}
+  .chead{display:flex;align-items:center;gap:11px;padding:18px 20px 16px}
+  .step{flex:none;width:25px;height:25px;border-radius:50%;background:var(--teal);color:#fff;
+    font-size:13px;font-weight:700;display:grid;place-items:center;letter-spacing:-.02em}
+  .chead h2{font-size:19px;font-weight:600;letter-spacing:-.02em;margin:0;flex:1}
+  .chead .sub{font-size:15px;font-weight:600;color:var(--ink2);font-variant-numeric:tabular-nums}
+  .chead .sub b{color:var(--ink)}
+  .info{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);
+    color:var(--ink3);font:italic 600 13px/1 Georgia,serif;cursor:pointer;transition:.18s}
+  .info:hover,.info.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .infobox{margin:0 16px 6px;padding:13px 15px;background:var(--bg);border-radius:14px;
+    font-size:13px;line-height:1.5;color:var(--ink2);letter-spacing:-.005em}
+  .infobox[hidden]{display:none}
+  .cbody{padding:4px 20px 20px}
 
-  .field{padding:14px 0;border-top:1px solid var(--line-2)}
-  .field:first-of-type{border-top:0}
-  .flabel{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:9px}
-  .flabel .h{font-weight:400;color:var(--mute);font-size:11px;font-family:'JetBrains Mono',monospace}
+  .field{padding-top:16px}
+  .flabel{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+  .flabel span{font-size:14px;font-weight:600;letter-spacing:-.01em}
+  .flabel .h{font-weight:500;color:var(--ink3);font-size:12px}
 
-  /* segmented (stage) */
-  .seg{display:flex;border:1px solid var(--ink);border-radius:3px;overflow:hidden}
-  .seg button{flex:1;border:0;border-right:1px solid var(--ink);background:transparent;font-family:'JetBrains Mono',monospace;
-    font-size:11px;letter-spacing:.04em;text-transform:uppercase;font-weight:500;color:var(--ink-2);padding:10px 6px;cursor:pointer;transition:.15s}
-  .seg button:last-child{border-right:0}
-  .seg button.on{background:var(--ink);color:var(--paper)}
+  /* segmented (Apple style) */
+  .seg{display:flex;background:#ececed;border-radius:11px;padding:3px;gap:3px}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:13.5px;font-weight:600;
+    color:var(--ink);padding:9px 6px;border-radius:9px;cursor:pointer;letter-spacing:-.01em;transition:.18s}
+  .seg button.on{background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.12)}
 
-  /* options — ruled selectors */
-  .opts{display:flex;flex-wrap:wrap;gap:6px}
+  /* options */
+  .opts{display:flex;flex-wrap:wrap;gap:7px}
   .opt{position:relative;flex:1 1 auto}
   .opt input{position:absolute;opacity:0;pointer-events:none}
-  .opt label{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;
-    font-size:12px;font-weight:600;color:var(--ink-2);background:var(--card);
-    border:1px solid var(--line);border-radius:3px;padding:8px 9px;cursor:pointer;transition:.13s;white-space:nowrap}
-  .opt label s{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mute);text-decoration:none}
-  .opt input:checked + label{border-color:var(--blood);background:#f3ecdd;color:var(--blood);box-shadow:inset 0 0 0 1px var(--blood)}
-  .opt input:checked + label s{color:var(--blood-2)}
-  .opt input:focus-visible + label{outline:2px solid var(--teal);outline-offset:1px}
+  .opt label{display:flex;flex-direction:column;align-items:center;gap:1px;text-align:center;
+    font-size:13px;font-weight:600;color:var(--ink);background:var(--card-2);border:1px solid var(--line);
+    border-radius:12px;padding:9px 11px;cursor:pointer;transition:.14s;white-space:nowrap;letter-spacing:-.01em}
+  .opt label s{font:500 10px/1 var(--mono);color:var(--ink3);text-decoration:none}
+  .opt input:checked + label{background:var(--teal);border-color:var(--teal);color:#fff}
+  .opt input:checked + label s{color:rgba(255,255,255,.7)}
+  .opt input:focus-visible + label{outline:2px solid var(--blue);outline-offset:2px}
 
-  /* number + slider */
-  input[type=number]{font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--ink);width:100%;
-    background:var(--card);border:1px solid var(--line);border-radius:3px;padding:10px 13px;outline:0}
-  input[type=number]:focus{border-color:var(--blood)}
-  .conv{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-2);margin-top:9px}
-  .conv b{color:var(--blood)}
+  /* number / link / slider */
+  input[type=number]{font:600 19px var(--sans);color:var(--ink);width:100%;background:var(--card-2);
+    border:1px solid var(--line);border-radius:13px;padding:12px 15px;outline:0;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+  input[type=number]:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(0,113,227,.12)}
+  .conv{font-size:13px;color:var(--ink2);margin-top:9px}.conv b{color:var(--teal);font-weight:700}
+  .extlink{display:inline-flex;align-items:center;gap:5px;margin-top:12px;font-size:14px;font-weight:600;
+    color:var(--blue);text-decoration:none;letter-spacing:-.01em}
+  .extlink:active{opacity:.6}
   .slrow{display:flex;align-items:center;gap:16px}
-  .slval{font-family:'Instrument Serif',serif;font-size:34px;line-height:1;min-width:74px}
-  .slval s{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--mute);text-decoration:none}
-  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:3px;background:var(--hair);outline:0}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:26px;border-radius:2px;
-    background:var(--blood);border:0;cursor:pointer}
-  input[type=range]::-moz-range-thumb{width:16px;height:26px;border-radius:2px;background:var(--blood);border:0;cursor:pointer}
+  .slval{font-size:30px;font-weight:600;min-width:78px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .slval s{font-size:13px;color:var(--ink3);text-decoration:none;font-weight:500}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:5px;border-radius:100px;
+    background:linear-gradient(90deg,var(--teal) 0,var(--teal) var(--pct,40%),#e2e2e7 var(--pct,40%));outline:0}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.28),0 0 0 .5px rgba(0,0,0,.04);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:0;box-shadow:0 1px 4px rgba(0,0,0,.28);cursor:pointer}
 
-  .formula{margin-top:30px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-2);
-    text-align:center;padding:14px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
-  .formula b{color:var(--blood);font-weight:700}
-
-  .note{margin-top:22px;font-size:11.5px;color:var(--ink-2);line-height:1.55;padding-left:14px;border-left:2px solid var(--blood)}
-  .note h4{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blood);margin:0 0 5px}
-  .note b{color:var(--ink)}
-
-  footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--hair);
-    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mute);letter-spacing:.03em;line-height:1.7;
-    display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
-
-  @media(min-width:560px){ .title{font-size:54px} .inst .num{font-size:94px} }
+  .formula{margin-top:24px;text-align:center;font-size:14px;font-weight:600;color:var(--ink2);
+    background:var(--card);border-radius:16px;padding:16px;box-shadow:var(--shadow);letter-spacing:-.01em}
+  .formula b{color:var(--teal)}
+  .note{margin-top:16px;background:#fff4e9;border-radius:16px;padding:15px 17px;font-size:12.5px;line-height:1.5;color:#8a5a22}
+  .note strong{display:block;font-size:13px;color:#b4651b;margin-bottom:4px;letter-spacing:-.01em}
+  .note b{color:#74471a}
+  footer{text-align:center;margin-top:22px;font-size:12px;color:var(--ink3);line-height:1.6;letter-spacing:-.01em}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="mast">
-    <div class="meta"><span>Endo-R · Reproductive Medicine</span><span class="blood">● Prototype v0.1</span></div>
-    <div class="rule"></div>
-    <div class="title">Integrated <em>Implantation</em><br>Score</div>
-    <div class="subt">SART × Embryo × Endometrium → unified index · pilot n=46</div>
-  </div>
+  <header>
+    <div class="eyebrow">Pilot Prototype</div>
+    <h1>Integrated Implantation Score</h1>
+    <p>A unified patient · embryo · endometrium index for IVF.</p>
+  </header>
 
-  <!-- ===== INSTRUMENT ===== -->
-  <div class="inst">
-    <div class="top">
-      <div>
-        <div class="cap">Integrated Index</div>
-        <div class="num" id="big">0.00<span class="u"> /10</span></div>
-      </div>
-      <div class="state" id="state">
-        <span class="tag" id="tag">Standby</span>
-        <div class="sub" id="vsub">Enter SART value to compute</div>
-      </div>
-    </div>
-
+  <!-- ===== RESULT ===== -->
+  <div class="hero">
+    <div class="cap">Integrated Index</div>
+    <div class="num" id="big">0.00<span class="u"> / 10</span></div>
+    <div class="pill" id="pill"><span class="d"></span><span id="ptag">Standby</span> <span class="sub" id="vsub">— enter SART to compute</span></div>
     <div class="ruler">
       <div class="ticks" id="ticks"></div>
       <div class="track"><div class="fill" id="fill" style="width:0%"></div></div>
-      <div class="thr"><b>4.19 cut-off</b></div>
+      <div class="thr"><b>4.19</b></div>
       <div class="needle" id="needle"></div>
     </div>
-
     <div class="comps">
       <div class="c"><div class="k">SART</div><div class="v" id="cSart">–<s>/10</s></div></div>
       <div class="c"><div class="k">Embryo</div><div class="v" id="cEmb">–<s>/10</s></div></div>
@@ -177,116 +157,121 @@
     </div>
   </div>
 
-  <!-- ===== 01 PROGNOSIS ===== -->
-  <div class="block">
-    <div class="bhead"><span class="idx">01</span><h2>Patient Prognosis</h2><span class="sub"><b id="pSart">0.0</b><s>/10</s></span></div>
-    <div class="field">
-      <div class="flabel"><span>SART predicted probability</span><span class="h">% → ÷10</span></div>
-      <input type="number" id="sartPct" min="0" max="100" step="0.1" placeholder="e.g. 45.0" inputmode="decimal">
-      <div class="conv">Normalized = % ÷ 10 = <b id="sartNorm">0.0</b> / 10</div>
-    </div>
-  </div>
-
-  <!-- ===== 02 EMBRYO ===== -->
-  <div class="block">
-    <div class="bhead"><span class="idx">02</span><h2>Embryo Morphology</h2><span class="sub"><b id="pEmb">0.0</b><s>/10</s></span></div>
-    <div class="field">
-      <div class="flabel"><span>Developmental stage</span></div>
-      <div class="seg" id="stage">
-        <button data-stage="d3" class="on">Day 3 · Cleavage</button>
-        <button data-stage="d5">Day 5–6 · Blastocyst</button>
+  <!-- ===== 1 PROGNOSIS ===== -->
+  <div class="card">
+    <div class="chead"><div class="step">1</div><h2>Patient Prognosis</h2><span class="sub"><b id="pSart">0.0</b> / 10</span><button class="info" data-t="i1">i</button></div>
+    <div class="infobox" id="i1" hidden>Enter the predicted IVF success probability (%) from the SART / McLernon calculator — it is divided by 10 to give the 0–10 score. The model uses age, height, weight, infertility diagnosis, prior IVF history, and oocyte count.</div>
+    <div class="cbody">
+      <div class="field">
+        <div class="flabel"><span>SART predicted probability</span><span class="h">% → ÷10</span></div>
+        <input type="number" id="sartPct" min="0" max="100" step="0.1" placeholder="e.g. 45.0" inputmode="decimal">
+        <div class="conv">Normalized = % ÷ 10 = <b id="sartNorm">0.0</b> / 10</div>
+        <a class="extlink" href="https://w3.abdn.ac.uk/clsm/SARTIVF/" target="_blank" rel="noopener">Open the SART IVF calculator ↗</a>
       </div>
     </div>
-    <div id="d3block">
-      <div class="field"><div class="flabel"><span>Cell number</span></div><div class="opts">
-        <div class="opt"><input type="radio" name="cell" id="cell2" value="2" checked><label for="cell2">Normal 6–10<s>2</s></label></div>
-        <div class="opt"><input type="radio" name="cell" id="cell0" value="0"><label for="cell0">Below range<s>0</s></label></div>
-      </div></div>
-      <div class="field"><div class="flabel"><span>Fragmentation</span></div><div class="opts">
-        <div class="opt"><input type="radio" name="frag" id="f3" value="3" checked><label for="f3">Gr 1 ≤10%<s>3</s></label></div>
-        <div class="opt"><input type="radio" name="frag" id="f25" value="2.5"><label for="f25">Gr 1–2<s>2.5</s></label></div>
-        <div class="opt"><input type="radio" name="frag" id="f2" value="2"><label for="f2">Gr 2<s>2</s></label></div>
-        <div class="opt"><input type="radio" name="frag" id="f15" value="1.5"><label for="f15">Gr 2–3<s>1.5</s></label></div>
-        <div class="opt"><input type="radio" name="frag" id="f1" value="1"><label for="f1">Gr 3<s>1</s></label></div>
-      </div></div>
-      <div class="field"><div class="flabel"><span>Symmetry</span></div><div class="opts">
-        <div class="opt"><input type="radio" name="sym" id="s3" value="3" checked><label for="s3">Symmetrical<s>3</s></label></div>
-        <div class="opt"><input type="radio" name="sym" id="s2" value="2"><label for="s2">Minor<s>2</s></label></div>
-        <div class="opt"><input type="radio" name="sym" id="s1" value="1"><label for="s1">Moderate<s>1</s></label></div>
-      </div></div>
-      <div class="field"><div class="flabel"><span>Cytoplasm</span></div><div class="opts">
-        <div class="opt"><input type="radio" name="cyt" id="cy1" value="1" checked><label for="cy1">Uniform<s>1</s></label></div>
-        <div class="opt"><input type="radio" name="cyt" id="cy05" value="0.5"><label for="cy05">Minor granular<s>0.5</s></label></div>
-        <div class="opt"><input type="radio" name="cyt" id="cy0" value="0"><label for="cy0">Granular<s>0</s></label></div>
-      </div></div>
-      <div class="field"><div class="flabel"><span>Zona pellucida</span></div><div class="opts">
-        <div class="opt"><input type="radio" name="zona" id="z1" value="1" checked><label for="z1">Visible / intact<s>1</s></label></div>
-        <div class="opt"><input type="radio" name="zona" id="z0" value="0"><label for="z0">Irregular / thin<s>0</s></label></div>
-      </div></div>
-    </div>
-    <div id="d5block" hidden>
-      <div class="field"><div class="flabel"><span>Expansion</span></div><div class="opts">
-        <div class="opt"><input type="radio" name="exp" id="e3" value="3" checked><label for="e3">Gr 5–6<s>3</s></label></div>
-        <div class="opt"><input type="radio" name="exp" id="e25" value="2.5"><label for="e25">Gr 4<s>2.5</s></label></div>
-        <div class="opt"><input type="radio" name="exp" id="e2" value="2"><label for="e2">Gr 3<s>2</s></label></div>
-        <div class="opt"><input type="radio" name="exp" id="e1" value="1"><label for="e1">Gr 2<s>1</s></label></div>
-        <div class="opt"><input type="radio" name="exp" id="e05" value="0.5"><label for="e05">Gr 1<s>0.5</s></label></div>
-      </div></div>
-      <div class="field"><div class="flabel"><span>Inner cell mass · ICM</span></div><div class="opts">
-        <div class="opt"><input type="radio" name="icm" id="i35" value="3.5" checked><label for="i35">Grade A<s>3.5</s></label></div>
-        <div class="opt"><input type="radio" name="icm" id="i2" value="2"><label for="i2">Grade B<s>2</s></label></div>
-        <div class="opt"><input type="radio" name="icm" id="i05" value="0.5"><label for="i05">Grade C<s>0.5</s></label></div>
-      </div></div>
-      <div class="field"><div class="flabel"><span>Trophectoderm · TE</span></div><div class="opts">
-        <div class="opt"><input type="radio" name="te" id="t35" value="3.5" checked><label for="t35">Grade A<s>3.5</s></label></div>
-        <div class="opt"><input type="radio" name="te" id="t2" value="2"><label for="t2">Grade B<s>2</s></label></div>
-        <div class="opt"><input type="radio" name="te" id="t05" value="0.5"><label for="t05">Grade C<s>0.5</s></label></div>
-      </div></div>
-    </div>
   </div>
 
-  <!-- ===== 03 ENDO-R ===== -->
-  <div class="block">
-    <div class="bhead"><span class="idx">03</span><h2>Endometrial Receptivity</h2><span class="sub"><b id="pEndo">0.0</b><s>/10</s></span></div>
-    <div class="field">
-      <div class="flabel"><span>Endometrial thickness</span><span class="h">7–14 → 2</span></div>
-      <div class="slrow">
-        <div class="slval"><span id="thkVal">9.0</span><s> mm</s></div>
-        <input type="range" id="thk" min="3" max="18" step="0.1" value="9">
+  <!-- ===== 2 EMBRYO ===== -->
+  <div class="card">
+    <div class="chead"><div class="step">2</div><h2>Embryo Morphology</h2><span class="sub"><b id="pEmb">0.0</b> / 10</span><button class="info" data-t="i2">i</button></div>
+    <div class="infobox" id="i2" hidden>Convert the embryologist's grade to a 0–10 score. Choose the developmental stage: Day 3 uses Baczkowski cleavage criteria (cell number, fragmentation, symmetry, cytoplasm, zona); Day 5–6 uses the Gardner blastocyst system (expansion, inner cell mass, trophectoderm). If two embryos were transferred, use the higher-quality one.</div>
+    <div class="cbody">
+      <div class="field">
+        <div class="flabel"><span>Developmental stage</span></div>
+        <div class="seg" id="stage">
+          <button data-stage="d3" class="on">Day 3 · Cleavage</button>
+          <button data-stage="d5">Day 5–6 · Blastocyst</button>
+        </div>
       </div>
-      <div class="conv">Score = <b id="thkPts">2</b> / 2</div>
+      <div id="d3block">
+        <div class="field"><div class="flabel"><span>Cell number</span></div><div class="opts">
+          <div class="opt"><input type="radio" name="cell" id="cell2" value="2" checked><label for="cell2">Normal 6–10<s>2</s></label></div>
+          <div class="opt"><input type="radio" name="cell" id="cell0" value="0"><label for="cell0">Below range<s>0</s></label></div>
+        </div></div>
+        <div class="field"><div class="flabel"><span>Fragmentation</span></div><div class="opts">
+          <div class="opt"><input type="radio" name="frag" id="f3" value="3" checked><label for="f3">Gr 1 ≤10%<s>3</s></label></div>
+          <div class="opt"><input type="radio" name="frag" id="f25" value="2.5"><label for="f25">Gr 1–2<s>2.5</s></label></div>
+          <div class="opt"><input type="radio" name="frag" id="f2" value="2"><label for="f2">Gr 2<s>2</s></label></div>
+          <div class="opt"><input type="radio" name="frag" id="f15" value="1.5"><label for="f15">Gr 2–3<s>1.5</s></label></div>
+          <div class="opt"><input type="radio" name="frag" id="f1" value="1"><label for="f1">Gr 3<s>1</s></label></div>
+        </div></div>
+        <div class="field"><div class="flabel"><span>Symmetry</span></div><div class="opts">
+          <div class="opt"><input type="radio" name="sym" id="s3" value="3" checked><label for="s3">Symmetrical<s>3</s></label></div>
+          <div class="opt"><input type="radio" name="sym" id="s2" value="2"><label for="s2">Minor<s>2</s></label></div>
+          <div class="opt"><input type="radio" name="sym" id="s1" value="1"><label for="s1">Moderate<s>1</s></label></div>
+        </div></div>
+        <div class="field"><div class="flabel"><span>Cytoplasm</span></div><div class="opts">
+          <div class="opt"><input type="radio" name="cyt" id="cy1" value="1" checked><label for="cy1">Uniform<s>1</s></label></div>
+          <div class="opt"><input type="radio" name="cyt" id="cy05" value="0.5"><label for="cy05">Minor granular<s>0.5</s></label></div>
+          <div class="opt"><input type="radio" name="cyt" id="cy0" value="0"><label for="cy0">Granular<s>0</s></label></div>
+        </div></div>
+        <div class="field"><div class="flabel"><span>Zona pellucida</span></div><div class="opts">
+          <div class="opt"><input type="radio" name="zona" id="z1" value="1" checked><label for="z1">Visible / intact<s>1</s></label></div>
+          <div class="opt"><input type="radio" name="zona" id="z0" value="0"><label for="z0">Irregular / thin<s>0</s></label></div>
+        </div></div>
+      </div>
+      <div id="d5block" hidden>
+        <div class="field"><div class="flabel"><span>Expansion</span></div><div class="opts">
+          <div class="opt"><input type="radio" name="exp" id="e3" value="3" checked><label for="e3">Gr 5–6<s>3</s></label></div>
+          <div class="opt"><input type="radio" name="exp" id="e25" value="2.5"><label for="e25">Gr 4<s>2.5</s></label></div>
+          <div class="opt"><input type="radio" name="exp" id="e2" value="2"><label for="e2">Gr 3<s>2</s></label></div>
+          <div class="opt"><input type="radio" name="exp" id="e1" value="1"><label for="e1">Gr 2<s>1</s></label></div>
+          <div class="opt"><input type="radio" name="exp" id="e05" value="0.5"><label for="e05">Gr 1<s>0.5</s></label></div>
+        </div></div>
+        <div class="field"><div class="flabel"><span>Inner cell mass · ICM</span></div><div class="opts">
+          <div class="opt"><input type="radio" name="icm" id="i35" value="3.5" checked><label for="i35">Grade A<s>3.5</s></label></div>
+          <div class="opt"><input type="radio" name="icm" id="i2" value="2"><label for="i2">Grade B<s>2</s></label></div>
+          <div class="opt"><input type="radio" name="icm" id="i05" value="0.5"><label for="i05">Grade C<s>0.5</s></label></div>
+        </div></div>
+        <div class="field"><div class="flabel"><span>Trophectoderm · TE</span></div><div class="opts">
+          <div class="opt"><input type="radio" name="te" id="t35" value="3.5" checked><label for="t35">Grade A<s>3.5</s></label></div>
+          <div class="opt"><input type="radio" name="te" id="t2" value="2"><label for="t2">Grade B<s>2</s></label></div>
+          <div class="opt"><input type="radio" name="te" id="t05" value="0.5"><label for="t05">Grade C<s>0.5</s></label></div>
+        </div></div>
+      </div>
     </div>
-    <div class="field"><div class="flabel"><span>Endometrial pattern</span></div><div class="opts">
-      <div class="opt"><input type="radio" name="pat" id="p2" value="2" checked><label for="p2">Trilaminar<s>2</s></label></div>
-      <div class="opt"><input type="radio" name="pat" id="p0" value="0"><label for="p0">Non-trilaminar<s>0</s></label></div>
-    </div></div>
-    <div class="field"><div class="flabel"><span>Endometrial volume</span></div><div class="opts">
-      <div class="opt"><input type="radio" name="vol" id="v2" value="2" checked><label for="v2">≥ 2 mL<s>2</s></label></div>
-      <div class="opt"><input type="radio" name="vol" id="v0" value="0"><label for="v0">&lt; 2 mL<s>0</s></label></div>
-    </div></div>
-    <div class="field"><div class="flabel"><span>Zone 3 blood flow</span></div><div class="opts">
-      <div class="opt"><input type="radio" name="flow" id="fl2" value="2" checked><label for="fl2">Abundant<s>2</s></label></div>
-      <div class="opt"><input type="radio" name="flow" id="fl1" value="1"><label for="fl1">Sparse<s>1</s></label></div>
-      <div class="opt"><input type="radio" name="flow" id="fl0" value="0"><label for="fl0">Absent<s>0</s></label></div>
-    </div></div>
-    <div class="field"><div class="flabel"><span>Mean uterine artery PI</span></div><div class="opts">
-      <div class="opt"><input type="radio" name="pi" id="pi2" value="2" checked><label for="pi2">≤ 2.19<s>2</s></label></div>
-      <div class="opt"><input type="radio" name="pi" id="pi1" value="1"><label for="pi1">2.20–2.49<s>1</s></label></div>
-      <div class="opt"><input type="radio" name="pi" id="pi0" value="0"><label for="pi0">≥ 2.50<s>0</s></label></div>
-    </div></div>
   </div>
 
-  <div class="formula">INTEGRATED = (SART ÷ 10) × (EMBRYO + ENDO·R) ÷ 2</div>
+  <!-- ===== 3 ENDO-R ===== -->
+  <div class="card">
+    <div class="chead"><div class="step">3</div><h2>Endometrial Receptivity</h2><span class="sub"><b id="pEndo">0.0</b> / 10</span><button class="info" data-t="i3">i</button></div>
+    <div class="infobox" id="i3" hidden>Score five transvaginal ultrasound parameters measured on the morning of embryo transfer: endometrial thickness, pattern, volume, zone-3 (sub-endometrial) blood flow, and the mean uterine artery pulsatility index. Together they form a 0–10 receptivity score (Endo-R).</div>
+    <div class="cbody">
+      <div class="field">
+        <div class="flabel"><span>Endometrial thickness</span><span class="h">7–14 mm → 2</span></div>
+        <div class="slrow"><div class="slval"><span id="thkVal">9.0</span><s> mm</s></div>
+          <input type="range" id="thk" min="3" max="18" step="0.1" value="9"></div>
+        <div class="conv">Score = <b id="thkPts">2</b> / 2</div>
+      </div>
+      <div class="field"><div class="flabel"><span>Endometrial pattern</span></div><div class="opts">
+        <div class="opt"><input type="radio" name="pat" id="p2" value="2" checked><label for="p2">Trilaminar<s>2</s></label></div>
+        <div class="opt"><input type="radio" name="pat" id="p0" value="0"><label for="p0">Non-trilaminar<s>0</s></label></div>
+      </div></div>
+      <div class="field"><div class="flabel"><span>Endometrial volume</span></div><div class="opts">
+        <div class="opt"><input type="radio" name="vol" id="v2" value="2" checked><label for="v2">≥ 2 mL<s>2</s></label></div>
+        <div class="opt"><input type="radio" name="vol" id="v0" value="0"><label for="v0">&lt; 2 mL<s>0</s></label></div>
+      </div></div>
+      <div class="field"><div class="flabel"><span>Zone 3 blood flow</span></div><div class="opts">
+        <div class="opt"><input type="radio" name="flow" id="fl2" value="2" checked><label for="fl2">Abundant<s>2</s></label></div>
+        <div class="opt"><input type="radio" name="flow" id="fl1" value="1"><label for="fl1">Sparse<s>1</s></label></div>
+        <div class="opt"><input type="radio" name="flow" id="fl0" value="0"><label for="fl0">Absent<s>0</s></label></div>
+      </div></div>
+      <div class="field"><div class="flabel"><span>Mean uterine artery PI</span></div><div class="opts">
+        <div class="opt"><input type="radio" name="pi" id="pi2" value="2" checked><label for="pi2">≤ 2.19<s>2</s></label></div>
+        <div class="opt"><input type="radio" name="pi" id="pi1" value="1"><label for="pi1">2.20–2.49<s>1</s></label></div>
+        <div class="opt"><input type="radio" name="pi" id="pi0" value="0"><label for="pi0">≥ 2.50<s>0</s></label></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="formula">Integrated = (SART ÷ 10) × (Embryo + Endo-R) ÷ 2</div>
 
   <div class="note">
-    <h4>Research &amp; educational prototype</h4>
+    <strong>Research &amp; educational prototype</strong>
     Implements a scoring system from a single-center pilot study (<b>n = 46</b>, biochemical-pregnancy endpoint). <b>Not validated for clinical use</b>; not tested against clinical pregnancy or live birth; must not guide treatment decisions. The 4.19 cut-off reflects apparent (in-sample) performance only.
   </div>
 
-  <footer>
-    <span>Bilen E · Okyay RE</span>
-    <span>Dokuz Eylül Üniversitesi</span>
-  </footer>
+  <footer>Bilen E · Okyay RE — Dokuz Eylül University<br>Prototype v0.2</footer>
 </div>
 
 <script>
@@ -295,50 +280,44 @@
   var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
   var stage='d3';
 
-  // build ruler ticks 0..10
   var ticks=$('#ticks');
-  for(var i=0;i<=10;i++){
-    var t=document.createElement('i');
-    t.style.left=(i*10)+'%';
-    if(i%2===0){t.className='maj';var b=document.createElement('b');b.textContent=i;t.appendChild(b);}
-    ticks.appendChild(t);
-  }
+  for(var i=0;i<=10;i++){var t=document.createElement('i');t.style.left=(i*10)+'%';
+    if(i%2===0){t.className='maj';var b=document.createElement('b');b.textContent=i;t.appendChild(b);}ticks.appendChild(t);}
 
-  function val(name){var el=document.querySelector('input[name="'+name+'"]:checked');return el?parseFloat(el.value):0;}
-  function embryoScore(){return stage==='d3'?(val('cell')+val('frag')+val('sym')+val('cyt')+val('zona')):(val('exp')+val('icm')+val('te'));}
-  function endoScore(){var thk=parseFloat($('#thk').value);var p=(thk>=7&&thk<=14)?2:0;$('#thkPts').textContent=p;return p+val('pat')+val('vol')+val('flow')+val('pi');}
-  function sartScore(){var p=parseFloat($('#sartPct').value);if(isNaN(p))return null;return Math.max(0,Math.min(100,p))/10;}
-  var f2=function(n){return n.toFixed(2)},f1=function(n){return n.toFixed(1)};
+  function val(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?parseFloat(e.value):0;}
+  function embryo(){return stage==='d3'?(val('cell')+val('frag')+val('sym')+val('cyt')+val('zona')):(val('exp')+val('icm')+val('te'));}
+  function endo(){var k=parseFloat($('#thk').value);var p=(k>=7&&k<=14)?2:0;$('#thkPts').textContent=p;return p+val('pat')+val('vol')+val('flow')+val('pi');}
+  function sart(){var p=parseFloat($('#sartPct').value);if(isNaN(p))return null;return Math.max(0,Math.min(100,p))/10;}
+  var f1=function(n){return n.toFixed(1)},f2=function(n){return n.toFixed(2)};
 
   function compute(){
-    var sart=sartScore(),emb=embryoScore(),endo=endoScore();
-    $('#sartNorm').textContent=sart===null?'0.0':f1(sart);
-    $('#pSart').textContent=sart===null?'0.0':f1(sart);
-    $('#pEmb').textContent=f1(emb);$('#pEndo').textContent=f1(endo);
-    $('#cEmb').innerHTML=f1(emb)+'<s>/10</s>';$('#cEndo').innerHTML=f1(endo)+'<s>/10</s>';
-    $('#cSart').innerHTML=(sart===null?'–':f1(sart))+'<s>/10</s>';
-
-    var st=$('#state'),tag=$('#tag'),vsub=$('#vsub');
-    if(sart===null){
-      $('#big').innerHTML='0.00<span class="u"> /10</span>';
-      $('#fill').style.width='0%';$('#needle').style.left='0%';
-      st.className='state';tag.textContent='Standby';vsub.textContent='Enter SART value to compute';return;
-    }
-    var integ=(sart/10)*((emb+endo)/2);
-    $('#big').innerHTML=f2(integ)+'<span class="u"> /10</span>';
-    var pct=Math.max(0,Math.min(100,integ*10));
-    $('#fill').style.width=pct+'%';$('#needle').style.left=pct+'%';
-    if(integ>=4.19){st.className='state above';tag.textContent='Above';vsub.textContent='≥ 4.19 · apparent Sn 70 / Sp 94';}
-    else{st.className='state below';tag.textContent='Below';vsub.textContent='< 4.19 · lower predicted likelihood';}
+    var s=sart(),e=embryo(),n=endo();
+    $('#sartNorm').textContent=s===null?'0.0':f1(s);
+    $$('#pSart').forEach(function(x){x.textContent=s===null?'0.0':f1(s)});
+    $('#pEmb').textContent=f1(e);$('#pEndo').textContent=f1(n);
+    $('#cEmb').innerHTML=f1(e)+'<s>/10</s>';$('#cEndo').innerHTML=f1(n)+'<s>/10</s>';
+    $('#cSart').innerHTML=(s===null?'–':f1(s))+'<s>/10</s>';
+    var pill=$('#pill'),tag=$('#ptag'),vsub=$('#vsub');
+    if(s===null){$('#big').innerHTML='0.00<span class="u"> / 10</span>';$('#fill').style.width='0%';$('#needle').style.left='0%';
+      pill.className='pill';tag.textContent='Standby';vsub.textContent='— enter SART to compute';return;}
+    var I=(s/10)*((e+n)/2);
+    $('#big').innerHTML=f2(I)+'<span class="u"> / 10</span>';
+    var pct=Math.max(0,Math.min(100,I*10));$('#fill').style.width=pct+'%';$('#needle').style.left=pct+'%';
+    if(I>=4.19){pill.className='pill above';tag.textContent='Above threshold';vsub.textContent='≥ 4.19 · Sn 70 / Sp 94';}
+    else{pill.className='pill below';tag.textContent='Below threshold';vsub.textContent='< 4.19 · lower likelihood';}
   }
 
   $$('#stage button').forEach(function(b){b.addEventListener('click',function(){
     $$('#stage button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');
-    stage=b.dataset.stage;$('#d3block').hidden=stage!=='d3';$('#d5block').hidden=stage!=='d5';compute();
-  });});
+    stage=b.dataset.stage;$('#d3block').hidden=stage!=='d3';$('#d5block').hidden=stage!=='d5';compute();});});
+
+  // info toggles
+  $$('.info').forEach(function(btn){btn.addEventListener('click',function(){
+    var box=$('#'+btn.dataset.t);box.hidden=!box.hidden;btn.classList.toggle('on',!box.hidden);});});
 
   var thk=$('#thk');
-  function thkUI(){$('#thkVal').textContent=parseFloat(thk.value).toFixed(1);}
+  function thkUI(){$('#thkVal').textContent=parseFloat(thk.value).toFixed(1);
+    thk.style.setProperty('--pct',((thk.value-thk.min)/(thk.max-thk.min)*100)+'%');}
   thk.addEventListener('input',function(){thkUI();compute();});
   document.addEventListener('input',compute);document.addEventListener('change',compute);
   thkUI();compute();
