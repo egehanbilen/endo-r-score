@@ -45,7 +45,7 @@
   .ticks i{position:absolute;top:0;width:1px;height:6px;background:rgba(255,255,255,.22)}
   .ticks i.maj{height:11px;background:rgba(255,255,255,.34)}
   .ticks i b{position:absolute;top:14px;left:50%;transform:translateX(-50%);font:500 9px/1 var(--mono);color:#86868b}
-  .thr{position:absolute;top:9px;height:24px;width:1.5px;background:var(--amber);left:41.9%;border-radius:2px}
+  .thr{position:absolute;top:9px;height:24px;width:1.5px;background:var(--amber);left:42%;border-radius:2px}
   .thr b{position:absolute;top:-13px;left:50%;transform:translateX(-50%);font:600 9px/1 var(--mono);color:var(--amber);white-space:nowrap}
   .needle{position:absolute;top:12px;left:0%;width:16px;height:16px;border-radius:50%;background:#fff;transform:translateX(-50%);box-shadow:0 2px 6px rgba(0,0,0,.4);transition:left .5s cubic-bezier(.22,.61,.36,1)}
 
@@ -134,7 +134,7 @@
     <div class="ruler">
       <div class="ticks" id="ticks"></div>
       <div class="track"><div class="fill" id="fill" style="width:0%"></div></div>
-      <div class="thr"><b>4.19</b></div>
+      <div class="thr"><b>4.2</b></div>
       <div class="needle" id="needle"></div>
     </div>
   </div>
@@ -255,7 +255,7 @@
 
   <div class="formula">Integrated = (SART ÷ 10) × (Embryo + Endo-R) ÷ 2</div>
   <div class="note"><strong>Research &amp; educational prototype</strong>
-    Implements a scoring system from a single-center pilot study (<b>n = 46</b>, biochemical-pregnancy endpoint). <b>Not validated for clinical use</b>; not tested against clinical pregnancy or live birth; must not guide treatment decisions. The 4.19 cut-off reflects apparent (in-sample) performance only.</div>
+    Implements a scoring system from a single-center pilot study (<b>n = 46</b>, biochemical-pregnancy endpoint). <b>Not validated for clinical use</b>; not tested against clinical pregnancy or live birth; must not guide treatment decisions. The 4.2 cut-off reflects apparent (in-sample) performance only.</div>
   <footer>Bilen E · Okyay RE — Dokuz Eylül University · Prototype v0.3</footer>
 </div>
 
@@ -287,8 +287,8 @@
     var I=(s/10)*((e+n)/2);
     $('#big').innerHTML=f2(I)+'<span class="u"> / 10</span>';
     var pct=Math.max(0,Math.min(100,I*10));$('#fill').style.width=pct+'%';$('#needle').style.left=pct+'%';
-    if(I>=4.19){pill.className='pill above';tag.textContent='Above threshold';vsub.textContent='≥ 4.19 · Sn 70 / Sp 94';}
-    else{pill.className='pill below';tag.textContent='Below threshold';vsub.textContent='< 4.19 · lower likelihood';}
+    if(I>=4.2){pill.className='pill above';tag.textContent='Above threshold';vsub.textContent='≥ 4.2 · Sn 70 / Sp 94';}
+    else{pill.className='pill below';tag.textContent='Below threshold';vsub.textContent='< 4.2 · lower likelihood';}
   }
 
   // tab switching
